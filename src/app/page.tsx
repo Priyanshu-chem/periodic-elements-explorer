@@ -1,65 +1,355 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiGrid, FiTrendingUp, FiColumns, FiBookmark, FiMenu } from 'react-icons/fi';
+import { ElementProperties } from '@/types';
+import { ELEMENTS } from '@/data/elements';
+import { CATEGORIES } from '@/data/categories';
+import { useBookmarks } from '@/context/BookmarkContext';
+import { useTheme } from '@/context/ThemeContext';
+import ThemeToggle from '@/components/ThemeToggle';
+import SearchBar from '@/components/SearchBar';
+import PeriodicTable from '@/components/PeriodicTable';
+import ElementDetail from '@/components/ElementDetail';
+import ElementComparison from '@/components/ElementComparison';
+import PeriodicTrends from '@/components/PeriodicTrends';
+import SpaceBackground from '@/components/SpaceBackground';
+
+type View = 'table' | 'trends' | 'compare';
+
+interface Filters {
+  group?: number;
+  period?: number;
+  category?: string;
+  phase?: string;
+  block?: string;
+  radioactiveOnly?: boolean;
+  naturalOnly?: boolean;
+  syntheticOnly?: boolean;
+}
+
+const NAV_ITEMS: { id: View; label: string; icon: typeof FiGrid }[] = [
+  { id: 'table', label: 'Periodic Table', icon: FiGrid },
+  { id: 'trends', label: 'Trends', icon: FiTrendingUp },
+  { id: 'compare', label: 'Compare', icon: FiColumns },
+];
+
+function CategoryLegend() {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 px-2 py-3">
+      {CATEGORIES.map((cat) => (
+        <div key={cat.id} className="flex items-center gap-1.5">
+          <span
+            className="inline-block h-2.5 w-2.5 rounded-sm"
+            style={{ backgroundColor: cat.color }}
+          />
+          <span className="text-[10px] leading-none text-zinc-400 dark:text-zinc-500">
+            {cat.label}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export default function Home() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filters, setFilters] = useState<Filters>({});
+  const [selectedElement, setSelectedElement] = useState<ElementProperties | null>(null);
+  const [activeView, setActiveView] = useState<View>('table');
+  const [showMobileNav, setShowMobileNav] = useState(false);
+  const [showBookmarks, setShowBookmarks] = useState(false);
+  const { bookmarks, toggleBookmark } = useBookmarks();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
+  const handleElementSelect = useCallback((element: ElementProperties) => {
+    setSelectedElement(element);
+  }, []);
+
+  const handleCloseDetail = useCallback(() => {
+    setSelectedElement(null);
+  }, []);
+
+  const bookmarkedElements = Array.from(bookmarks).sort((a, b) => a - b);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className={`relative flex min-h-screen flex-col ${isDark ? 'bg-zinc-950' : 'bg-zinc-50'}`}>
+      {isDark && <SpaceBackground />}
+
+      <header className={`sticky top-0 z-30 border-b backdrop-blur-xl ${
+        isDark ? 'border-white/10 bg-zinc-950/80' : 'border-zinc-200 bg-white/80'
+      }`}>
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
+          <div className="flex items-center gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 text-sm font-bold text-white shadow-lg shadow-purple-500/20">
+              Pe
+            </div>
+            <h1 className={`text-lg font-semibold tracking-tight max-sm:hidden ${
+              isDark ? 'text-white' : 'text-zinc-900'
+            }`}>
+              Periodic Elements Explorer
+            </h1>
+          </div>
+
+          <nav className="hidden items-center gap-1 sm:flex">
+            {NAV_ITEMS.map(({ id, label, icon: Icon }) => (
+              <motion.button
+                key={id}
+                onClick={() => setActiveView(id)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-all ${
+                  activeView === id
+                    ? isDark
+                      ? 'bg-white/10 text-white shadow-sm'
+                      : 'bg-zinc-200 text-zinc-900'
+                    : isDark
+                      ? 'text-white/50 hover:bg-white/5 hover:text-white/80'
+                      : 'text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700'
+                }`}
+              >
+                <Icon size={16} />
+                {label}
+              </motion.button>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-1">
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => setShowBookmarks(!showBookmarks)}
+              className={`relative flex h-9 w-9 items-center justify-center rounded-full transition-colors ${
+                isDark
+                  ? 'text-white/50 hover:bg-white/10 hover:text-white'
+                  : 'text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700'
+              }`}
+              aria-label="Bookmarks"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              <FiBookmark size={18} />
+              {bookmarks.size > 0 && (
+                <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-purple-500 text-[9px] text-white shadow-lg">
+                  {bookmarks.size}
+                </span>
+              )}
+            </motion.button>
+            <ThemeToggle />
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => setShowMobileNav(!showMobileNav)}
+              className={`flex h-9 w-9 items-center justify-center rounded-full transition-colors sm:hidden ${
+                isDark
+                  ? 'text-white/50 hover:bg-white/10 hover:text-white'
+                  : 'text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700'
+              }`}
+              aria-label="Menu"
             >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              <FiMenu size={18} />
+            </motion.button>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+        <AnimatePresence>
+          {showMobileNav && (
+            <motion.div
+              className={`px-4 py-2 sm:hidden ${
+                isDark ? 'border-t border-white/10 bg-zinc-950' : 'border-t border-zinc-200 bg-white'
+              }`}
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+            >
+              <div className="flex flex-wrap gap-1">
+                {NAV_ITEMS.map(({ id, label, icon: Icon }) => (
+                  <button
+                    key={id}
+                    onClick={() => { setActiveView(id); setShowMobileNav(false); }}
+                    className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+                      activeView === id
+                        ? isDark ? 'bg-white/10 text-white' : 'bg-zinc-200 text-zinc-900'
+                        : isDark ? 'text-white/50' : 'text-zinc-500'
+                    }`}
+                  >
+                    <Icon size={14} />
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {activeView === 'table' && (
+          <motion.div
+            className={`px-4 py-3 sm:px-6 ${
+              isDark ? 'border-t border-white/10' : 'border-t border-zinc-200'
+            }`}
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2 }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <div className="mx-auto max-w-7xl">
+              <SearchBar
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                filters={filters}
+                onFiltersChange={setFilters}
+              />
+            </div>
+          </motion.div>
+        )}
+      </header>
+
+      <main className="relative z-10 flex-1">
+        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-6">
+          <AnimatePresence mode="wait">
+            {activeView === 'table' && (
+              <motion.div
+                key="table"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+              >
+                <div className={`rounded-2xl backdrop-blur-sm border p-4 sm:p-6 shadow-2xl ${
+                  isDark
+                    ? 'bg-zinc-900/60 border-white/10'
+                    : 'bg-white/80 border-zinc-200'
+                }`}>
+                  <PeriodicTable
+                    searchQuery={searchQuery}
+                    filters={filters}
+                    onElementSelect={handleElementSelect}
+                    bookmarks={bookmarks}
+                    onToggleBookmark={toggleBookmark}
+                  />
+                  <div className={`border-t mt-4 pt-2 ${
+                    isDark ? 'border-white/5' : 'border-zinc-200'
+                  }`}>
+                    <CategoryLegend />
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {activeView === 'trends' && (
+              <motion.div
+                key="trends"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+              >
+                <div className={`rounded-2xl backdrop-blur-sm border p-4 sm:p-6 shadow-2xl ${
+                  isDark
+                    ? 'bg-zinc-900/60 border-white/10'
+                    : 'bg-white/80 border-zinc-200'
+                }`}>
+                  <PeriodicTrends />
+                </div>
+              </motion.div>
+            )}
+
+            {activeView === 'compare' && (
+              <motion.div
+                key="compare"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+              >
+                <div className={`rounded-2xl backdrop-blur-sm border p-4 sm:p-6 shadow-2xl ${
+                  isDark
+                    ? 'bg-zinc-900/60 border-white/10'
+                    : 'bg-white/80 border-zinc-200'
+                }`}>
+                  <ElementComparison />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </main>
+
+      <ElementDetail
+        element={selectedElement}
+        onClose={handleCloseDetail}
+        isBookmarked={selectedElement ? bookmarks.has(selectedElement.atomicNumber) : false}
+        onToggleBookmark={toggleBookmark}
+      />
+
+      <AnimatePresence>
+        {showBookmarks && (
+          <motion.div
+            className="fixed inset-0 z-40 flex items-start justify-end bg-black/40 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowBookmarks(false)}
+          >
+            <motion.div
+              className={`h-full w-full border-l shadow-2xl sm:w-80 ${
+                isDark
+                  ? 'border-white/10 bg-zinc-900'
+                  : 'border-zinc-200 bg-white'
+              }`}
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 250 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className={`flex items-center justify-between border-b p-4 ${
+                isDark ? 'border-white/10' : 'border-zinc-200'
+              }`}>
+                <h2 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-zinc-900'}`}>
+                  Bookmarks
+                </h2>
+                <span className={`text-sm ${isDark ? 'text-white/50' : 'text-zinc-500'}`}>
+                  {bookmarks.size} elements
+                </span>
+              </div>
+              <div className="overflow-y-auto p-4">
+                {bookmarkedElements.length === 0 ? (
+                  <p className={`text-center text-sm ${isDark ? 'text-white/40' : 'text-zinc-400'}`}>
+                    No bookmarked elements
+                  </p>
+                ) : (
+                  <div className="space-y-1">
+                    {bookmarkedElements.map((atomicNumber) => {
+                      const el = ELEMENTS.find((e: ElementProperties) => e.atomicNumber === atomicNumber);
+                      if (!el) return null;
+                      return (
+                        <motion.button
+                          key={atomicNumber}
+                          whileHover={{ scale: 1.02, x: 4 }}
+                          onClick={() => { setSelectedElement(el); setShowBookmarks(false); }}
+                          className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors ${
+                            isDark ? 'hover:bg-white/5' : 'hover:bg-zinc-100'
+                          }`}
+                        >
+                          <span className={`w-8 text-right text-xs ${isDark ? 'text-white/40' : 'text-zinc-400'}`}>
+                            {el.atomicNumber}
+                          </span>
+                          <span className={`font-semibold ${isDark ? 'text-white' : 'text-zinc-900'}`}>
+                            {el.symbol}
+                          </span>
+                          <span className={`${isDark ? 'text-white/50' : 'text-zinc-500'}`}>
+                            {el.name}
+                          </span>
+                        </motion.button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
