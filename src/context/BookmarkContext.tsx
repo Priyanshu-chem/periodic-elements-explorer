@@ -22,11 +22,7 @@ function loadBookmarks(): Set<number> {
 }
 
 export function BookmarkProvider({ children }: { children: ReactNode }) {
-  const [bookmarks, setBookmarks] = useState<Set<number>>(new Set());
-
-  useEffect(() => {
-    setBookmarks(loadBookmarks());
-  }, []);
+  const [bookmarks, setBookmarks] = useState<Set<number>>(() => loadBookmarks());
 
   useEffect(() => {
     localStorage.setItem('bookmarks', JSON.stringify(Array.from(bookmarks)));

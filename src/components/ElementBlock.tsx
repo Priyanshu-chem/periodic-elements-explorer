@@ -9,11 +9,18 @@ import { cn } from '@/utils/cn';
 interface ElementBlockProps {
   element: ElementProperties;
   onClick: (el: ElementProperties) => void;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
   isBookmarked?: boolean;
 }
 
 const sizeConfig = {
+  xs: {
+    blockClass: 'p-[2px] min-w-[30px] min-h-[30px] text-[7px]',
+    symbolClass: 'text-[9px] font-bold leading-none',
+    numberClass: 'text-[5px] leading-none',
+    showName: false,
+    showMass: false,
+  },
   sm: {
     blockClass: 'p-0.5 min-w-[48px] min-h-[48px] text-[10px]',
     symbolClass: 'text-sm font-bold leading-none',

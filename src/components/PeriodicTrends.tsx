@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiTrendingUp } from 'react-icons/fi';
 import { ELEMENTS } from '@/data/elements';
+import { useIsMobile } from '@/utils/useIsMobile';
 import { ElementProperties, TrendType, TrendConfig } from '@/types';
 
 const TREND_CONFIGS: TrendConfig[] = [
@@ -88,6 +89,7 @@ export default function PeriodicTrends() {
     };
   }, [activeConfig]);
 
+  const isMobile = useIsMobile(640);
   const heatmapElements = useMemo(() => {
     return ELEMENTS.filter((el) => el.block !== 'f').slice(0, 89);
   }, []);
@@ -128,29 +130,33 @@ export default function PeriodicTrends() {
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.2 }}
         >
-          <div className="grid grid-cols-18 gap-0.5 sm:gap-1">
-            {heatmapElements.map((el) => {
-              const value = valueMap.get(el.atomicNumber);
-              const hasValue = value !== undefined;
+          <div className="w-full overflow-x-auto pb-2">
+            <div className={isMobile ? 'min-w-[640px]' : ''}>
+              <div className="grid grid-cols-18 gap-[1px] sm:gap-0.5">
+                {heatmapElements.map((el) => {
+                  const value = valueMap.get(el.atomicNumber);
+                  const hasValue = value !== undefined;
 
-              const { bg: bgColor, text: textColor } = hasValue
-                ? getHeatmapColor(value!, min, max, activeConfig.color)
-                : { bg: '#e5e7eb', text: '#9ca3af' };
+                  const { bg: bgColor, text: textColor } = hasValue
+                    ? getHeatmapColor(value!, min, max, activeConfig.color)
+                    : { bg: '#e5e7eb', text: '#9ca3af' };
 
-              return (
-                <div
-                  key={el.atomicNumber}
-                  className="flex min-h-[40px] min-w-[40px] flex-col items-center justify-center rounded p-0.5 text-[9px] leading-tight sm:min-h-[52px] sm:min-w-[52px] sm:text-[10px]"
-                  style={{ backgroundColor: bgColor, color: textColor }}
-                  title={`${el.symbol} - ${el.name}: ${hasValue ? `${value}${activeConfig.unit}` : 'N/A'}`}
-                >
-                  <span className="font-bold">{el.symbol}</span>
-                  {hasValue && (
-                    <span className="opacity-80">{value}</span>
-                  )}
-                </div>
-              );
-            })}
+                  return (
+                    <div
+                      key={el.atomicNumber}
+                      className="flex min-h-[28px] min-w-[28px] flex-col items-center justify-center rounded p-[1px] text-[7px] leading-tight sm:min-h-[40px] sm:min-w-[40px] sm:p-0.5 sm:text-[9px] md:min-h-[52px] md:min-w-[52px] md:text-[10px]"
+                      style={{ backgroundColor: bgColor, color: textColor }}
+                      title={`${el.symbol} - ${el.name}: ${hasValue ? `${value}${activeConfig.unit}` : 'N/A'}`}
+                    >
+                      <span className="font-bold">{el.symbol}</span>
+                      {hasValue && (
+                        <span className="opacity-80 hidden sm:block">{value}</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
 
           <div className="mt-4 flex items-center gap-3">

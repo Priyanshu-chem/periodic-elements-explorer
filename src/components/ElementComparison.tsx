@@ -142,7 +142,7 @@ export default function ElementComparison() {
                   Property
                 </th>
                 {selectedElements.map((el) => {
-                  const { color, textColor } = getCategoryInfo(el.category);
+                  const { color } = getCategoryInfo(el.category);
                   return (
                     <th
                       key={el.atomicNumber}

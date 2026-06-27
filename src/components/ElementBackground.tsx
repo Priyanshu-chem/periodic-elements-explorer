@@ -51,13 +51,9 @@ function hslToRgb(h: number, s: number, l: number): [number, number, number] {
 
 function rand(min: number, max: number) { return Math.random() * (max - min) + min; }
 
-function lerp(a: number, b: number, t: number) { return a + (b - a) * t; }
-
 function clamp(v: number, min: number, max: number) { return Math.max(min, Math.min(max, v)); }
 
 function normalize(v: number, min: number, max: number) { return (v - min) / (max - min); }
-
-interface Particle { x: number; y: number; vx: number; vy: number; size: number; alpha: number; phase: number; life: number; maxLife: number; }
 
 const ELEMENT_VISUALS: Record<number, ElementVisual> = {
   1:  { base: [100, 180, 255], accent: [180, 220, 255], pattern: 'nebula', particleCount: 60, glowStrength: 0.6, opacity: 0.25 },
@@ -417,7 +413,6 @@ function drawNebula(ctx: CanvasRenderingContext2D, vis: ElementVisual, t: number
 }
 
 function drawRadioactiveBG(ctx: CanvasRenderingContext2D, vis: ElementVisual, t: number, w: number, h: number) {
-  const [br, bg, bb] = vis.base;
   const [ar, ag, ab] = vis.accent;
   const cx = w / 2, cy = h / 2;
   const maxR = Math.max(w, h) * 0.6;
@@ -491,7 +486,6 @@ function drawMagnetic(ctx: CanvasRenderingContext2D, vis: ElementVisual, t: numb
 }
 
 function drawSparks(ctx: CanvasRenderingContext2D, vis: ElementVisual, t: number, w: number, h: number) {
-  const [br, bg, bb] = vis.base;
   const [ar, ag, ab] = vis.accent;
   drawMetallic(ctx, vis, t, w, h);
   for (let i = 0; i < 15; i++) {

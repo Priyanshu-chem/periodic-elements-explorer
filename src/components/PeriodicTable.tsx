@@ -1,10 +1,11 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ELEMENTS } from '@/data/elements';
 import { ElementProperties } from '@/types';
 import ElementBlock from './ElementBlock';
+import { useIsMobile } from '@/utils/useIsMobile';
 
 interface PeriodicTableProps {
   searchQuery: string;
@@ -66,6 +67,7 @@ function renderElementGrid(
   excludeFBlock: boolean,
   onElementSelect: (el: ElementProperties) => void,
   bookmarks: Set<number>,
+  blockSize: 'xs' | 'sm' | 'md' | 'lg' = 'md',
 ) {
   const filtered = elements.filter((el) => {
     if (excludeFBlock && (el.block === 'f')) return false;
@@ -96,7 +98,7 @@ function renderElementGrid(
               <ElementBlock
                 element={element}
                 onClick={onElementSelect}
-                size="md"
+                size={blockSize}
                 isBookmarked={bookmarks.has(element.atomicNumber)}
               />
             </motion.div>
@@ -113,6 +115,7 @@ function renderFBlockRow(
   label: string,
   onElementSelect: (el: ElementProperties) => void,
   bookmarks: Set<number>,
+  blockSize: 'xs' | 'sm' | 'md' | 'lg' = 'md',
 ) {
   const fElements = range
     .map((num) => elements.find((el) => el.atomicNumber === num))
@@ -120,7 +123,7 @@ function renderFBlockRow(
 
   return (
     <div className="flex items-center justify-center gap-1 sm:gap-2">
-      <span className="w-8 text-right text-[10px] font-medium text-zinc-400 dark:text-zinc-500 sm:w-10 sm:text-xs">
+      <span className="w-6 text-right text-[8px] font-medium text-zinc-400 dark:text-zinc-500 sm:w-8 sm:text-[10px] md:w-10 md:text-xs">
         {label}
       </span>
       <div className="grid grid-cols-15 gap-0.5 sm:gap-1">
@@ -129,7 +132,7 @@ function renderFBlockRow(
             <ElementBlock
               element={element}
               onClick={onElementSelect}
-              size="md"
+              size={blockSize}
               isBookmarked={bookmarks.has(element.atomicNumber)}
             />
           </motion.div>
@@ -145,22 +148,29 @@ export default function PeriodicTable({
   onElementSelect,
   bookmarks,
 }: PeriodicTableProps) {
+  const isMobile = useIsMobile(640);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const visibleElements = useMemo(() => {
     return ELEMENTS.filter((el) => matchesSearch(el, searchQuery) && matchesFilters(el, filters));
   }, [searchQuery, filters]);
 
+  const blockSize = isMobile ? 'sm' : 'md';
+
   return (
     <motion.div
-      className="w-full overflow-x-auto pb-4"
+      ref={scrollRef}
+      className="w-full overflow-x-auto pb-4 scrollbar-none"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      {renderElementGrid(visibleElements, true, onElementSelect, bookmarks)}
+      <div className={isMobile ? 'min-w-[680px]' : ''}>
+        {renderElementGrid(visibleElements, true, onElementSelect, bookmarks, blockSize)}
 
-      <div className="mt-3 space-y-1">
-        {renderFBlockRow(visibleElements, LANTHANIDE_RANGE, '57-71', onElementSelect, bookmarks)}
-        {renderFBlockRow(visibleElements, ACTINIDE_RANGE, '89-103', onElementSelect, bookmarks)}
+        <div className="mt-3 space-y-1">
+          {renderFBlockRow(visibleElements, LANTHANIDE_RANGE, '57-71', onElementSelect, bookmarks, blockSize)}
+          {renderFBlockRow(visibleElements, ACTINIDE_RANGE, '89-103', onElementSelect, bookmarks, blockSize)}
+        </div>
       </div>
     </motion.div>
   );

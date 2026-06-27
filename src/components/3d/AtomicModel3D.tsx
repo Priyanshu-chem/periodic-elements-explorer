@@ -4,11 +4,17 @@ import React, { Suspense, useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
+import { useIsMobile } from '@/utils/useIsMobile';
 
 interface AtomicModel3DProps {
   atomicNumber: number;
   atomicMass?: number;
   shellModel: number[];
+}
+
+function seededUnit(seed: number) {
+  const value = Math.sin(seed * 12.9898) * 43758.5453;
+  return value - Math.floor(value);
 }
 
 function Nucleus({ protons, neutrons }: { protons: number; neutrons: number }) {
@@ -22,9 +28,10 @@ function Nucleus({ protons, neutrons }: { protons: number; neutrons: number }) {
       let pos: THREE.Vector3;
       let attempts = 0;
       do {
-        const theta = Math.acos(2 * Math.random() - 1);
-        const phi = Math.random() * Math.PI * 2;
-        const r = maxR * Math.cbrt(Math.random());
+        const seed = total * 1000 + i * 97 + attempts * 31;
+        const theta = Math.acos(2 * seededUnit(seed + 1) - 1);
+        const phi = seededUnit(seed + 2) * Math.PI * 2;
+        const r = maxR * Math.cbrt(seededUnit(seed + 3));
         pos = new THREE.Vector3(
           r * Math.sin(theta) * Math.cos(phi),
           r * Math.sin(theta) * Math.sin(phi),
@@ -186,14 +193,25 @@ function AtomScene(props: AtomicModel3DProps) {
 }
 
 export default function AtomicModel3D(props: AtomicModel3DProps) {
+  const isMobile = useIsMobile(640);
+  const camPos: [number, number, number] = isMobile ? [3, 2.5, 4.5] : [4, 3, 6];
+  const fov = isMobile ? 60 : 50;
+
   return (
     <Canvas
-      camera={{ position: [4, 3, 6], fov: 50, near: 0.1, far: 30 }}
+      camera={{ position: camPos, fov, near: 0.1, far: 30 }}
       gl={{ alpha: true, antialias: true }}
       style={{ width: '100%', height: '100%', background: 'transparent' }}
+      dpr={[1, 1.5]}
     >
       <AtomScene {...props} />
-      <OrbitControls enableDamping dampingFactor={0.1} autoRotate autoRotateSpeed={0.5} />
+      <OrbitControls
+        enableDamping
+        dampingFactor={0.15}
+        autoRotate
+        autoRotateSpeed={0.5}
+        touches={{ ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN }}
+      />
     </Canvas>
   );
 }

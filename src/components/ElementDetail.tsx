@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiX, FiStar, FiDownload } from 'react-icons/fi';
 import { ElementProperties } from '@/types';
@@ -15,7 +15,7 @@ interface ElementDetailProps {
   onToggleBookmark: (id: number) => void;
 }
 
-function InfoRow({ label, value, icon }: { label: string; value: string | number | undefined | null; icon?: string }) {
+function InfoRow({ label, value }: { label: string; value: string | number | undefined | null }) {
   if (value === undefined || value === null || value === '') return null;
   return (
     <div className="flex items-center justify-between gap-2 py-2 px-3 rounded-lg transition-colors hover:bg-white/5">
@@ -27,7 +27,7 @@ function InfoRow({ label, value, icon }: { label: string; value: string | number
   );
 }
 
-function Section({ title, icon, children }: { title: string; icon?: string; children: React.ReactNode }) {
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
   const childArray = Array.isArray(children) ? children : [children];
   const hasContent = childArray.some((c) => c !== null && c !== false && c !== undefined);
   if (!hasContent) return null;
@@ -72,7 +72,6 @@ export default function ElementDetail({
   if (!element) return null;
 
   const categoryInfo = getCategoryInfo(element.category);
-  const hasRadioactive = element.isotopes.some((i) => i.isRadioactive);
   const neutrons = element.atomicWeight ? Math.round(element.atomicWeight) - element.atomicNumber : 0;
 
   return (
@@ -85,7 +84,7 @@ export default function ElementDetail({
         onClick={onClose}
       >
         <motion.div
-          className="relative flex h-full w-full flex-col overflow-hidden shadow-2xl sm:w-[560px] sm:border-l border-white/10"
+          className="relative flex h-full w-full flex-col overflow-hidden shadow-2xl sm:max-w-[520px] md:w-[560px] sm:border-l border-white/10"
           initial={{ x: '100%', opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: '100%', opacity: 0 }}
@@ -97,7 +96,7 @@ export default function ElementDetail({
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent pointer-events-none" />
 
           <div className="relative z-10 flex h-full flex-col">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
+              <div className="flex items-center justify-between px-3 py-3 sm:px-5 sm:py-4 border-b border-white/10">
               <div className="flex items-center gap-3">
                 <div
                   className="flex h-12 w-12 items-center justify-center rounded-2xl shadow-lg"
@@ -149,7 +148,7 @@ export default function ElementDetail({
             </div>
 
             <div className="flex-1 overflow-y-auto custom-scrollbar">
-              <div className="relative h-[340px] w-full">
+              <div className="relative h-[240px] w-full sm:h-[340px]">
                 <div className="absolute inset-0 flex items-center justify-center p-4">
                   <div className="h-full w-full max-w-[400px]">
                     <AtomicModel3D
@@ -176,8 +175,8 @@ export default function ElementDetail({
                 </div>
               </div>
 
-              <div className="p-5 pt-3 space-y-5">
-                <div className="grid grid-cols-2 gap-3">
+              <div className="p-3 pt-2 space-y-3 sm:p-5 sm:pt-3 sm:space-y-5">
+                <div className="grid grid-cols-2 gap-2 sm:gap-3">
                   <div className="rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 p-4 text-center">
                     <div className="text-2xl font-bold text-white">{element.atomicNumber}</div>
                     <div className="text-[10px] font-medium uppercase tracking-wider text-white/40 mt-1">Protons</div>
