@@ -22,6 +22,7 @@ interface PeriodicTableProps {
   onElementSelect: (element: ElementProperties) => void;
   bookmarks: Set<number>;
   onToggleBookmark: (id: number) => void;
+  highlightCategory?: string;
 }
 
 const LANTHANIDE_RANGE = [57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71] as const;
@@ -68,6 +69,7 @@ function renderElementGrid(
   onElementSelect: (el: ElementProperties) => void,
   bookmarks: Set<number>,
   blockSize: 'xs' | 'sm' | 'md' | 'lg' = 'md',
+  highlightCategory?: string,
 ) {
   const filtered = elements.filter((el) => {
     if (excludeFBlock && (el.block === 'f')) return false;
@@ -79,6 +81,15 @@ function renderElementGrid(
     const col = el.group ?? 0;
     grid.set(`${el.period}-${col}`, el);
   });
+
+  // Place La (57) at group 3, period 6 and Ac (89) at group 3, period 7
+  // alongside their f-block row positions
+  if (excludeFBlock) {
+    const la = elements.find(el => el.atomicNumber === 57);
+    const ac = elements.find(el => el.atomicNumber === 89);
+    if (la) grid.set('6-3', la);
+    if (ac) grid.set('7-3', ac);
+  }
 
   const rows: { period: number; group: number; element: ElementProperties | null }[] = [];
   for (let period = 1; period <= 7; period++) {
@@ -100,6 +111,7 @@ function renderElementGrid(
                 onClick={onElementSelect}
                 size={blockSize}
                 isBookmarked={bookmarks.has(element.atomicNumber)}
+                highlightCategory={highlightCategory}
               />
             </motion.div>
           )}
@@ -116,17 +128,18 @@ function renderFBlockRow(
   onElementSelect: (el: ElementProperties) => void,
   bookmarks: Set<number>,
   blockSize: 'xs' | 'sm' | 'md' | 'lg' = 'md',
+  highlightCategory?: string,
 ) {
   const fElements = range
     .map((num) => elements.find((el) => el.atomicNumber === num))
     .filter((el): el is ElementProperties => el !== undefined);
 
   return (
-    <div className="flex items-center justify-center gap-1 sm:gap-2">
-      <span className="w-6 text-right text-[8px] font-medium text-zinc-400 dark:text-zinc-500 sm:w-8 sm:text-[10px] md:w-10 md:text-xs">
+    <div className="flex items-center gap-1 sm:gap-2">
+      <span className="w-6 shrink-0 text-right text-[8px] font-medium text-zinc-400 dark:text-zinc-500 sm:w-8 sm:text-[10px] md:w-10 md:text-xs">
         {label}
       </span>
-      <div className="grid grid-cols-15 gap-0.5 sm:gap-1">
+      <div className="grid flex-1 grid-cols-15 gap-0.5">
         {fElements.map((element) => (
           <motion.div key={element.atomicNumber} variants={itemVariants}>
             <ElementBlock
@@ -134,6 +147,7 @@ function renderFBlockRow(
               onClick={onElementSelect}
               size={blockSize}
               isBookmarked={bookmarks.has(element.atomicNumber)}
+              highlightCategory={highlightCategory}
             />
           </motion.div>
         ))}
@@ -147,6 +161,7 @@ export default function PeriodicTable({
   filters,
   onElementSelect,
   bookmarks,
+  highlightCategory,
 }: PeriodicTableProps) {
   const isMobile = useIsMobile(640);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -165,11 +180,11 @@ export default function PeriodicTable({
       animate="visible"
     >
       <div className={isMobile ? 'min-w-[680px]' : ''}>
-        {renderElementGrid(visibleElements, true, onElementSelect, bookmarks, blockSize)}
+        {renderElementGrid(visibleElements, true, onElementSelect, bookmarks, blockSize, highlightCategory)}
 
         <div className="mt-3 space-y-1">
-          {renderFBlockRow(visibleElements, LANTHANIDE_RANGE, '57-71', onElementSelect, bookmarks, blockSize)}
-          {renderFBlockRow(visibleElements, ACTINIDE_RANGE, '89-103', onElementSelect, bookmarks, blockSize)}
+          {renderFBlockRow(visibleElements, LANTHANIDE_RANGE, '57-71', onElementSelect, bookmarks, blockSize, highlightCategory)}
+          {renderFBlockRow(visibleElements, ACTINIDE_RANGE, '89-103', onElementSelect, bookmarks, blockSize, highlightCategory)}
         </div>
       </div>
     </motion.div>

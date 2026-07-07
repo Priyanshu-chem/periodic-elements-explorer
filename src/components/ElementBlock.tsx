@@ -11,6 +11,7 @@ interface ElementBlockProps {
   onClick: (el: ElementProperties) => void;
   size?: 'xs' | 'sm' | 'md' | 'lg';
   isBookmarked?: boolean;
+  highlightCategory?: string;
 }
 
 const sizeConfig = {
@@ -49,9 +50,11 @@ export default function ElementBlock({
   onClick,
   size = 'md',
   isBookmarked = false,
+  highlightCategory,
 }: ElementBlockProps) {
   const { color, textColor } = getCategoryInfo(element.category);
   const config = sizeConfig[size];
+  const isDimmed = highlightCategory !== undefined && element.category !== highlightCategory;
 
   return (
     <motion.button
@@ -59,9 +62,10 @@ export default function ElementBlock({
       whileHover={{ scale: 1.12, zIndex: 10 }}
       whileTap={{ scale: 0.95 }}
       className={cn(
-        'relative flex cursor-pointer flex-col rounded border border-zinc-200/50 text-left shadow-sm transition-shadow dark:border-white/10',
+        'relative flex cursor-pointer flex-col rounded border border-zinc-200/50 text-left shadow-sm transition-all dark:border-white/10',
         'hover:shadow-lg hover:shadow-black/10 dark:hover:shadow-black/30',
         config.blockClass,
+        isDimmed && 'opacity-25',
       )}
       style={{ backgroundColor: color, color: textColor }}
       title={`${element.atomicNumber}. ${element.name} (${element.symbol})`}

@@ -105,7 +105,7 @@ export default function ElementComparison() {
                         value={searchInput}
                         onChange={(e) => setSearchInput(e.target.value)}
                         placeholder="Search elements..."
-                        className="w-full rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm text-zinc-900 dark:border-white/10 dark:bg-white/5 dark:text-white"
+                        className="w-full rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm text-zinc-900 placeholder-zinc-400 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder-white/40"
                         autoFocus
                       />
                     </div>

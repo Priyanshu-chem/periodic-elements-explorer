@@ -33,9 +33,9 @@ export const CATEGORIES: CategoryInfo[] = [
   {
     id: 'post-transition-metal',
     label: 'Post-Transition Metal',
-    color: '#98fb98',
-    darkColor: '#6bc46b',
-    textColor: '#1a1a2e',
+    color: '#00bcd4',
+    darkColor: '#0097a7',
+    textColor: '#ffffff',
   },
   {
     id: 'metalloid',
@@ -47,8 +47,8 @@ export const CATEGORIES: CategoryInfo[] = [
   {
     id: 'nonmetal',
     label: 'Nonmetal',
-    color: '#90ee90',
-    darkColor: '#5ab85a',
+    color: '#8bc34a',
+    darkColor: '#689f38',
     textColor: '#1a1a2e',
   },
   {

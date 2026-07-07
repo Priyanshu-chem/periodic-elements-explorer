@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiX, FiStar, FiDownload } from 'react-icons/fi';
+import { FiX, FiStar, FiDownload, FiMaximize2 } from 'react-icons/fi';
 import { ElementProperties } from '@/types';
 import { getCategoryInfo } from '@/data/categories';
 import AtomicModel3D from './3d/AtomicModel3D';
@@ -69,8 +69,9 @@ export default function ElementDetail({
     };
   }, [element, handleKeyDown]);
 
-  if (!element) return null;
+  const [fullscreenModel, setFullscreenModel] = useState(false);
 
+  if (!element) return null;
   const categoryInfo = getCategoryInfo(element.category);
   const neutrons = element.atomicWeight ? Math.round(element.atomicWeight) - element.atomicNumber : 0;
 
@@ -144,22 +145,32 @@ export default function ElementDetail({
                 >
                   <FiX size={18} />
                 </motion.button>
-              </div>
-            </div>
-
-            <div className="flex-1 overflow-y-auto custom-scrollbar">
-              <div className="relative h-[240px] w-full sm:h-[340px]">
-                <div className="absolute inset-0 flex items-center justify-center p-4">
-                  <div className="h-full w-full max-w-[400px]">
-                    <AtomicModel3D
-                      atomicNumber={element.atomicNumber}
-                      atomicMass={element.atomicWeight}
-                      shellModel={element.shellModel || []}
-                    />
-                  </div>
                 </div>
+              </div>
 
-                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-4 px-4 py-2 rounded-full bg-black/40 backdrop-blur-md border border-white/10">
+              <div className="flex-1 overflow-y-auto custom-scrollbar">
+                <div className="relative h-[240px] w-full sm:h-[340px]">
+                  <div className="absolute inset-0 flex items-center justify-center p-4">
+                    <div className="h-full w-full max-w-[400px]">
+                      <AtomicModel3D
+                        atomicNumber={element.atomicNumber}
+                        atomicMass={element.atomicWeight}
+                        shellModel={element.shellModel || []}
+                      />
+                    </div>
+                  </div>
+
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setFullscreenModel(true)}
+                    className="absolute top-3 right-3 z-10 flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg border border-white/20 bg-black/40 text-white/60 backdrop-blur-md transition-colors hover:bg-white/20 hover:text-white"
+                    aria-label="View fullscreen"
+                  >
+                    <FiMaximize2 size={14} />
+                  </motion.button>
+
+                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-4 px-4 py-2 rounded-full bg-black/40 backdrop-blur-md border border-white/10">
                   <div className="flex items-center gap-1.5 text-xs text-white/70">
                     <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
                     <span>{element.atomicNumber}p</span>
@@ -379,6 +390,38 @@ export default function ElementDetail({
             </div>
           </div>
         </motion.div>
+
+        {fullscreenModel && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-black overflow-hidden"
+            onClick={() => setFullscreenModel(false)}
+          >
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => setFullscreenModel(false)}
+              className="absolute top-4 right-4 z-10 flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 border border-white/20 text-white/70 transition-colors hover:bg-white/20 hover:text-white"
+              aria-label="Close fullscreen"
+            >
+              <FiX size={20} />
+            </motion.button>
+            <motion.div
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              className="absolute inset-0"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <AtomicModel3D
+                atomicNumber={element.atomicNumber}
+                atomicMass={element.atomicWeight}
+                shellModel={element.shellModel || []}
+              />
+            </motion.div>
+          </motion.div>
+        )}
       </motion.div>
     </AnimatePresence>
   );

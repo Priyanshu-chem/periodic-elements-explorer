@@ -35,20 +35,42 @@ const NAV_ITEMS: { id: View; label: string; icon: typeof FiGrid }[] = [
   { id: 'compare', label: 'Compare', icon: FiColumns },
 ];
 
-function CategoryLegend() {
+function CategoryLegend({
+  activeCategory,
+  onCategorySelect,
+}: {
+  activeCategory?: string;
+  onCategorySelect: (cat: string | undefined) => void;
+}) {
   return (
-    <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 px-2 py-3">
-      {CATEGORIES.map((cat) => (
-        <div key={cat.id} className="flex items-center gap-1.5">
-          <span
-            className="inline-block h-2.5 w-2.5 rounded-sm"
-            style={{ backgroundColor: cat.color }}
-          />
-          <span className="text-[10px] leading-none text-zinc-400 dark:text-zinc-500">
-            {cat.label}
-          </span>
-        </div>
-      ))}
+    <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 px-2 py-3">
+      {CATEGORIES.map((cat) => {
+        const isActive = activeCategory === cat.id;
+        return (
+          <button
+            key={cat.id}
+            onClick={(e) => {
+              e.stopPropagation();
+              onCategorySelect(isActive ? undefined : cat.id);
+            }}
+            className={`flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium transition-all ${
+              isActive
+                ? 'ring-1 ring-offset-1 ring-offset-transparent'
+                : 'opacity-60 hover:opacity-100 text-zinc-600 dark:text-zinc-400'
+            }`}
+            style={{
+              backgroundColor: isActive ? cat.color + '20' : 'transparent',
+              color: isActive ? cat.color : undefined,
+            }}
+          >
+            <span
+              className="inline-block h-3 w-3 rounded-sm"
+              style={{ backgroundColor: cat.color }}
+            />
+            <span className="text-xs leading-none">{cat.label}</span>
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -56,6 +78,7 @@ function CategoryLegend() {
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<Filters>({});
+  const [highlightCategory, setHighlightCategory] = useState<string | undefined>(undefined);
   const [selectedElement, setSelectedElement] = useState<ElementProperties | null>(null);
   const [activeView, setActiveView] = useState<View>('table');
   const [showMobileNav, setShowMobileNav] = useState(false);
@@ -203,7 +226,7 @@ export default function Home() {
         )}
       </header>
 
-      <main className="relative z-10 flex-1">
+      <main className="relative z-10 flex-1" onClick={() => setHighlightCategory(undefined)}>
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-6">
           <AnimatePresence mode="wait">
             {activeView === 'table' && (
@@ -225,11 +248,15 @@ export default function Home() {
                     onElementSelect={handleElementSelect}
                     bookmarks={bookmarks}
                     onToggleBookmark={toggleBookmark}
+                    highlightCategory={highlightCategory}
                   />
                   <div className={`border-t mt-4 pt-2 ${
                     isDark ? 'border-white/5' : 'border-zinc-200'
                   }`}>
-                    <CategoryLegend />
+                    <CategoryLegend
+                      activeCategory={highlightCategory}
+                      onCategorySelect={setHighlightCategory}
+                    />
                   </div>
                 </div>
               </motion.div>
