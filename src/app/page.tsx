@@ -103,7 +103,7 @@ export default function Home() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 text-sm font-bold text-white shadow-lg shadow-purple-500/20">
               Pe
             </div>
-            <h1 className="text-lg font-semibold tracking-tight text-white max-sm:hidden">
+            <h1 className="text-lg font-semibold tracking-tight text-white">
               Periodic Elements Explorer
             </h1>
           </div>
@@ -203,8 +203,9 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-6">
           <AnimatePresence mode="wait">
             {activeView === 'table' && (
-              <motion.div
+              <motion.section
                 key="table"
+                aria-label="Periodic Table"
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -12 }}
@@ -226,12 +227,13 @@ export default function Home() {
                     />
                   </div>
                 </div>
-              </motion.div>
+              </motion.section>
             )}
 
             {activeView === 'trends' && (
-              <motion.div
+              <motion.section
                 key="trends"
+                aria-label="Periodic Trends"
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -12 }}
@@ -240,12 +242,13 @@ export default function Home() {
                 <div className="rounded-2xl border border-white/10 bg-zinc-900/60 p-4 backdrop-blur-sm shadow-2xl sm:p-6">
                   <PeriodicTrends />
                 </div>
-              </motion.div>
+              </motion.section>
             )}
 
             {activeView === 'compare' && (
-              <motion.div
+              <motion.section
                 key="compare"
+                aria-label="Element Comparison"
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -12 }}
@@ -254,7 +257,7 @@ export default function Home() {
                 <div className="rounded-2xl border border-white/10 bg-zinc-900/60 p-4 backdrop-blur-sm shadow-2xl sm:p-6">
                   <ElementComparison />
                 </div>
-              </motion.div>
+              </motion.section>
             )}
           </AnimatePresence>
         </div>
@@ -328,6 +331,10 @@ export default function Home() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <footer className="border-t border-white/10 py-4 text-center text-xs text-white/30">
+        Periodic Elements Explorer &copy; {new Date().getFullYear()}
+      </footer>
     </div>
   );
 }

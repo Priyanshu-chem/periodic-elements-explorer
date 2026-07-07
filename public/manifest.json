@@ -4,7 +4,7 @@
   "description": "Interactive periodic table of elements for chemistry students and educators",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "background_color": "#09090b",
   "theme_color": "#18181b",
   "icons": [
     {
