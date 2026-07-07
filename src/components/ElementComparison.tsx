@@ -62,8 +62,8 @@ export default function ElementComparison() {
   return (
     <div className="w-full">
       <div className="mb-4 flex items-center gap-2">
-        <FiColumns className="text-zinc-500 dark:text-white/50" size={18} />
-        <h2 className="text-lg font-semibold text-zinc-900 dark:text-white">Element Comparison</h2>
+        <FiColumns className="text-white/50" size={18} />
+        <h2 className="text-lg font-semibold text-white">Element Comparison</h2>
       </div>
 
       <div className="relative mb-4">
@@ -87,14 +87,14 @@ export default function ElementComparison() {
             <div className="relative">
               <button
                 onClick={() => setShowDropdown(!showDropdown)}
-                className="flex items-center gap-1 rounded-full border border-dashed border-zinc-300 px-3 py-1 text-sm text-zinc-500 transition-colors hover:border-zinc-400 hover:text-zinc-700 dark:border-white/20 dark:text-white/50 dark:hover:border-white/40 dark:hover:text-white/80"
+                className="flex items-center gap-1 rounded-full border border-dashed border-white/20 px-3 py-1 text-sm text-white/50 transition-colors hover:border-white/40 hover:text-white/80"
               >
                 <FiPlus size={14} /> Add element
               </button>
               <AnimatePresence>
                 {showDropdown && (
                   <motion.div
-                    className="absolute left-0 top-full z-20 mt-1 w-64 rounded-lg border border-zinc-200 bg-white shadow-lg dark:border-white/10 dark:bg-zinc-900 dark:shadow-2xl"
+                    className="absolute left-0 top-full z-20 mt-1 w-64 rounded-lg border border-white/10 bg-zinc-900 shadow-2xl"
                     initial={{ opacity: 0, y: -8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
@@ -105,7 +105,7 @@ export default function ElementComparison() {
                         value={searchInput}
                         onChange={(e) => setSearchInput(e.target.value)}
                         placeholder="Search elements..."
-                        className="w-full rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm text-zinc-900 placeholder-zinc-400 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder-white/40"
+                        className="w-full rounded-md border border-white/10 bg-white/5 px-2 py-1.5 text-sm text-white placeholder-white/40"
                         autoFocus
                       />
                     </div>
@@ -114,15 +114,15 @@ export default function ElementComparison() {
                         <button
                           key={el.atomicNumber}
                           onClick={() => addElement(el)}
-                          className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm transition-colors hover:bg-zinc-100 dark:hover:bg-white/10"
+                          className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm transition-colors hover:bg-white/10"
                         >
-                          <span className="w-6 text-right text-xs text-zinc-400 dark:text-white/40">{el.atomicNumber}</span>
-                          <span className="font-medium text-zinc-900 dark:text-white">{el.symbol}</span>
-                          <span className="text-zinc-500 dark:text-white/50">{el.name}</span>
+                          <span className="w-6 text-right text-xs text-white/40">{el.atomicNumber}</span>
+                          <span className="font-medium text-white">{el.symbol}</span>
+                          <span className="text-white/50">{el.name}</span>
                         </button>
                       ))}
                       {filteredOptions.length === 0 && (
-                        <div className="px-3 py-4 text-center text-sm text-zinc-400 dark:text-white/40">No elements found</div>
+                        <div className="px-3 py-4 text-center text-sm text-white/40">No elements found</div>
                       )}
                     </div>
                   </motion.div>
@@ -134,11 +134,11 @@ export default function ElementComparison() {
       </div>
 
       {selectedElements.length >= 2 && (
-        <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-white/10">
+        <div className="overflow-x-auto rounded-lg border border-white/10">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-zinc-200 bg-zinc-50 dark:border-white/10 dark:bg-white/5">
-                <th className="sticky left-0 z-10 bg-zinc-50 px-3 py-2 text-xs font-medium uppercase text-zinc-500 dark:bg-zinc-900 dark:text-white/50">
+              <tr className="border-b border-white/10 bg-white/5">
+                <th className="sticky left-0 z-10 bg-zinc-900 px-3 py-2 text-xs font-medium uppercase text-white/50">
                   Property
                 </th>
                 {selectedElements.map((el) => {
@@ -155,10 +155,10 @@ export default function ElementComparison() {
                 })}
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-100 dark:divide-white/10">
+            <tbody className="divide-y divide-white/10">
               {COMPARISON_ROWS.map((row) => (
-                <tr key={row.label} className="hover:bg-zinc-50 dark:hover:bg-white/5">
-                  <td className="sticky left-0 z-10 bg-white px-3 py-2 text-xs font-medium text-zinc-600 dark:bg-zinc-900 dark:text-white/60">
+                <tr key={row.label} className="hover:bg-white/5">
+                  <td className="sticky left-0 z-10 bg-zinc-900 px-3 py-2 text-xs font-medium text-white/60">
                     {row.label}
                   </td>
                   {selectedElements.map((el) => {
@@ -169,7 +169,7 @@ export default function ElementComparison() {
                         key={el.atomicNumber}
                         className={cn(
                           'px-3 py-2 text-center',
-                          isNumeric ? 'font-mono text-zinc-800 dark:text-white/80' : 'text-zinc-700 dark:text-white/70',
+                          isNumeric ? 'font-mono text-white/80' : 'text-white/70',
                         )}
                       >
                         {value ?? 'N/A'}
@@ -184,7 +184,7 @@ export default function ElementComparison() {
       )}
 
       {selectedElements.length < 2 && (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-zinc-300 py-12 text-zinc-400 dark:border-white/20 dark:text-white/40">
+        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-white/20 py-12 text-white/40">
           <FiColumns size={32} className="mb-2" />
           <p className="text-sm">Add at least 2 elements to compare</p>
         </div>

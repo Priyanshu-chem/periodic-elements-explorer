@@ -136,7 +136,7 @@ function renderFBlockRow(
 
   return (
     <div className="flex items-center gap-1 sm:gap-2">
-      <span className="w-6 shrink-0 text-right text-[8px] font-medium text-zinc-400 dark:text-zinc-500 sm:w-8 sm:text-[10px] md:w-10 md:text-xs">
+      <span className="w-6 shrink-0 text-right text-[8px] font-medium text-zinc-400 sm:w-8 sm:text-[10px] md:w-10 md:text-xs">
         {label}
       </span>
       <div className="grid flex-1 grid-cols-15 gap-0.5">

@@ -7,8 +7,6 @@ import { ElementProperties } from '@/types';
 import { ELEMENTS } from '@/data/elements';
 import { CATEGORIES } from '@/data/categories';
 import { useBookmarks } from '@/context/BookmarkContext';
-import { useTheme } from '@/context/ThemeContext';
-import ThemeToggle from '@/components/ThemeToggle';
 import SearchBar from '@/components/SearchBar';
 import PeriodicTable from '@/components/PeriodicTable';
 import ElementDetail from '@/components/ElementDetail';
@@ -56,7 +54,7 @@ function CategoryLegend({
             className={`flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium transition-all ${
               isActive
                 ? 'ring-1 ring-offset-1 ring-offset-transparent'
-                : 'opacity-60 hover:opacity-100 text-zinc-600 dark:text-zinc-400'
+                : 'opacity-60 hover:opacity-100 text-zinc-400'
             }`}
             style={{
               backgroundColor: isActive ? cat.color + '20' : 'transparent',
@@ -84,8 +82,6 @@ export default function Home() {
   const [showMobileNav, setShowMobileNav] = useState(false);
   const [showBookmarks, setShowBookmarks] = useState(false);
   const { bookmarks, toggleBookmark } = useBookmarks();
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
 
   const handleElementSelect = useCallback((element: ElementProperties) => {
     setSelectedElement(element);
@@ -98,20 +94,16 @@ export default function Home() {
   const bookmarkedElements = Array.from(bookmarks).sort((a, b) => a - b);
 
   return (
-    <div className={`relative flex min-h-screen flex-col ${isDark ? 'bg-zinc-950' : 'bg-zinc-50'}`}>
-      {isDark && <SpaceBackground />}
+    <div className="relative flex min-h-screen flex-col bg-zinc-950">
+      <SpaceBackground />
 
-      <header className={`sticky top-0 z-30 border-b backdrop-blur-xl ${
-        isDark ? 'border-white/10 bg-zinc-950/80' : 'border-zinc-200 bg-white/80'
-      }`}>
+      <header className="sticky top-0 z-30 border-b border-white/10 bg-zinc-950/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 text-sm font-bold text-white shadow-lg shadow-purple-500/20">
               Pe
             </div>
-            <h1 className={`text-lg font-semibold tracking-tight max-sm:hidden ${
-              isDark ? 'text-white' : 'text-zinc-900'
-            }`}>
+            <h1 className="text-lg font-semibold tracking-tight text-white max-sm:hidden">
               Periodic Elements Explorer
             </h1>
           </div>
@@ -125,12 +117,8 @@ export default function Home() {
                 whileTap={{ scale: 0.95 }}
                 className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-all ${
                   activeView === id
-                    ? isDark
-                      ? 'bg-white/10 text-white shadow-sm'
-                      : 'bg-zinc-200 text-zinc-900'
-                    : isDark
-                      ? 'text-white/50 hover:bg-white/5 hover:text-white/80'
-                      : 'text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700'
+                    ? 'bg-white/10 text-white shadow-sm'
+                    : 'text-white/50 hover:bg-white/5 hover:text-white/80'
                 }`}
               >
                 <Icon size={16} />
@@ -144,11 +132,7 @@ export default function Home() {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => setShowBookmarks(!showBookmarks)}
-              className={`relative flex h-9 w-9 items-center justify-center rounded-full transition-colors ${
-                isDark
-                  ? 'text-white/50 hover:bg-white/10 hover:text-white'
-                  : 'text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700'
-              }`}
+              className="relative flex h-9 w-9 items-center justify-center rounded-full text-white/50 transition-colors hover:bg-white/10 hover:text-white"
               aria-label="Bookmarks"
             >
               <FiBookmark size={18} />
@@ -158,16 +142,11 @@ export default function Home() {
                 </span>
               )}
             </motion.button>
-            <ThemeToggle />
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => setShowMobileNav(!showMobileNav)}
-              className={`flex h-9 w-9 items-center justify-center rounded-full transition-colors sm:hidden ${
-                isDark
-                  ? 'text-white/50 hover:bg-white/10 hover:text-white'
-                  : 'text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700'
-              }`}
+              className="flex h-9 w-9 items-center justify-center rounded-full text-white/50 transition-colors hover:bg-white/10 hover:text-white sm:hidden"
               aria-label="Menu"
             >
               <FiMenu size={18} />
@@ -178,9 +157,7 @@ export default function Home() {
         <AnimatePresence>
           {showMobileNav && (
             <motion.div
-              className={`px-4 py-2 sm:hidden ${
-                isDark ? 'border-t border-white/10 bg-zinc-950' : 'border-t border-zinc-200 bg-white'
-              }`}
+              className="border-t border-white/10 bg-zinc-950 px-4 py-2 sm:hidden"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
@@ -191,9 +168,7 @@ export default function Home() {
                     key={id}
                     onClick={() => { setActiveView(id); setShowMobileNav(false); }}
                     className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
-                      activeView === id
-                        ? isDark ? 'bg-white/10 text-white' : 'bg-zinc-200 text-zinc-900'
-                        : isDark ? 'text-white/50' : 'text-zinc-500'
+                      activeView === id ? 'bg-white/10 text-white' : 'text-white/50'
                     }`}
                   >
                     <Icon size={14} />
@@ -207,9 +182,7 @@ export default function Home() {
 
         {activeView === 'table' && (
           <motion.div
-            className={`px-4 py-3 sm:px-6 ${
-              isDark ? 'border-t border-white/10' : 'border-t border-zinc-200'
-            }`}
+            className="border-t border-white/10 px-4 py-3 sm:px-6"
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.2 }}
@@ -237,11 +210,7 @@ export default function Home() {
                 exit={{ opacity: 0, y: -12 }}
                 transition={{ duration: 0.3, ease: 'easeOut' }}
               >
-                <div className={`rounded-2xl backdrop-blur-sm border p-4 sm:p-6 shadow-2xl ${
-                  isDark
-                    ? 'bg-zinc-900/60 border-white/10'
-                    : 'bg-white/80 border-zinc-200'
-                }`}>
+                <div className="rounded-2xl border border-white/10 bg-zinc-900/60 p-4 backdrop-blur-sm shadow-2xl sm:p-6">
                   <PeriodicTable
                     searchQuery={searchQuery}
                     filters={filters}
@@ -250,9 +219,7 @@ export default function Home() {
                     onToggleBookmark={toggleBookmark}
                     highlightCategory={highlightCategory}
                   />
-                  <div className={`border-t mt-4 pt-2 ${
-                    isDark ? 'border-white/5' : 'border-zinc-200'
-                  }`}>
+                  <div className="border-t border-white/5 mt-4 pt-2">
                     <CategoryLegend
                       activeCategory={highlightCategory}
                       onCategorySelect={setHighlightCategory}
@@ -270,11 +237,7 @@ export default function Home() {
                 exit={{ opacity: 0, y: -12 }}
                 transition={{ duration: 0.3, ease: 'easeOut' }}
               >
-                <div className={`rounded-2xl backdrop-blur-sm border p-4 sm:p-6 shadow-2xl ${
-                  isDark
-                    ? 'bg-zinc-900/60 border-white/10'
-                    : 'bg-white/80 border-zinc-200'
-                }`}>
+                <div className="rounded-2xl border border-white/10 bg-zinc-900/60 p-4 backdrop-blur-sm shadow-2xl sm:p-6">
                   <PeriodicTrends />
                 </div>
               </motion.div>
@@ -288,11 +251,7 @@ export default function Home() {
                 exit={{ opacity: 0, y: -12 }}
                 transition={{ duration: 0.3, ease: 'easeOut' }}
               >
-                <div className={`rounded-2xl backdrop-blur-sm border p-4 sm:p-6 shadow-2xl ${
-                  isDark
-                    ? 'bg-zinc-900/60 border-white/10'
-                    : 'bg-white/80 border-zinc-200'
-                }`}>
+                <div className="rounded-2xl border border-white/10 bg-zinc-900/60 p-4 backdrop-blur-sm shadow-2xl sm:p-6">
                   <ElementComparison />
                 </div>
               </motion.div>
@@ -318,30 +277,24 @@ export default function Home() {
             onClick={() => setShowBookmarks(false)}
           >
             <motion.div
-              className={`h-full w-full border-l shadow-2xl sm:w-80 ${
-                isDark
-                  ? 'border-white/10 bg-zinc-900'
-                  : 'border-zinc-200 bg-white'
-              }`}
+              className="h-full w-full border-l border-white/10 bg-zinc-900 shadow-2xl sm:w-80"
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 250 }}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className={`flex items-center justify-between border-b p-4 ${
-                isDark ? 'border-white/10' : 'border-zinc-200'
-              }`}>
-                <h2 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-zinc-900'}`}>
+              <div className="flex items-center justify-between border-b border-white/10 p-4">
+                <h2 className="text-lg font-semibold text-white">
                   Bookmarks
                 </h2>
-                <span className={`text-sm ${isDark ? 'text-white/50' : 'text-zinc-500'}`}>
+                <span className="text-sm text-white/50">
                   {bookmarks.size} elements
                 </span>
               </div>
               <div className="overflow-y-auto p-4">
                 {bookmarkedElements.length === 0 ? (
-                  <p className={`text-center text-sm ${isDark ? 'text-white/40' : 'text-zinc-400'}`}>
+                  <p className="text-center text-sm text-white/40">
                     No bookmarked elements
                   </p>
                 ) : (
@@ -354,17 +307,15 @@ export default function Home() {
                           key={atomicNumber}
                           whileHover={{ scale: 1.02, x: 4 }}
                           onClick={() => { setSelectedElement(el); setShowBookmarks(false); }}
-                          className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors ${
-                            isDark ? 'hover:bg-white/5' : 'hover:bg-zinc-100'
-                          }`}
+                          className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors hover:bg-white/5"
                         >
-                          <span className={`w-8 text-right text-xs ${isDark ? 'text-white/40' : 'text-zinc-400'}`}>
+                          <span className="w-8 text-right text-xs text-white/40">
                             {el.atomicNumber}
                           </span>
-                          <span className={`font-semibold ${isDark ? 'text-white' : 'text-zinc-900'}`}>
+                          <span className="font-semibold text-white">
                             {el.symbol}
                           </span>
-                          <span className={`${isDark ? 'text-white/50' : 'text-zinc-500'}`}>
+                          <span className="text-white/50">
                             {el.name}
                           </span>
                         </motion.button>

@@ -97,8 +97,8 @@ export default function PeriodicTrends() {
   return (
     <div className="w-full">
       <div className="mb-4 flex items-center gap-2">
-        <FiTrendingUp className="text-zinc-900 dark:text-white/50" size={18} />
-        <h2 className="text-lg font-semibold text-zinc-900 dark:text-white">Periodic Trends</h2>
+        <FiTrendingUp className="text-white/50" size={18} />
+        <h2 className="text-lg font-semibold text-white">Periodic Trends</h2>
       </div>
 
       <div className="mb-4 flex flex-wrap gap-2">
@@ -109,7 +109,7 @@ export default function PeriodicTrends() {
             className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-all ${
               selectedTrend === config.type
                 ? 'text-white shadow-sm'
-                : 'bg-zinc-100 text-zinc-900 hover:bg-zinc-200 dark:bg-white/5 dark:text-white/60 dark:hover:bg-white/10 dark:hover:text-white/80'
+                : 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white/80'
             }`}
             style={
               selectedTrend === config.type
@@ -160,7 +160,7 @@ export default function PeriodicTrends() {
           </div>
 
           <div className="mt-4 flex items-center gap-3">
-            <span className="text-xs text-zinc-900 dark:text-white/50">{min}{activeConfig.unit}</span>
+            <span className="text-xs text-white/50">{min}{activeConfig.unit}</span>
             <div className="flex h-3 flex-1 overflow-hidden rounded-full">
               {Array.from({ length: 20 }, (_, i) => {
                 const ratio = i / 19;
@@ -175,7 +175,7 @@ export default function PeriodicTrends() {
                 );
               })}
             </div>
-            <span className="text-xs text-zinc-900 dark:text-white/50">
+            <span className="text-xs text-white/50">
               {max}{activeConfig.unit}
             </span>
           </div>

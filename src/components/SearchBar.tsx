@@ -73,19 +73,19 @@ export default function SearchBar({
         <div className="relative flex-1">
           <FiSearch
             size={16}
-            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-zinc-900 dark:text-white/50"
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-white/50"
           />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search by name, symbol, or atomic number..."
-            className="w-full rounded-lg border bg-white/80 py-2 pl-9 pr-3 text-sm text-zinc-900 placeholder-zinc-400 transition-colors focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:border-white/10 dark:bg-zinc-800 dark:text-white dark:placeholder-white/40 dark:focus:border-white/30 dark:focus:ring-white/20"
+            className="w-full rounded-lg border bg-zinc-800 py-2 pl-9 pr-3 text-sm text-white placeholder-white/40 transition-colors focus:border-white/30 focus:outline-none focus:ring-1 focus:ring-white/20"
           />
           {searchQuery && (
             <button
               onClick={() => onSearchChange('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-900 hover:text-zinc-700 dark:text-white/50 dark:hover:text-white/80"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white/80"
             >
               <FiX size={14} />
             </button>
@@ -97,8 +97,8 @@ export default function SearchBar({
             className={cn(
               'flex h-10 items-center gap-1.5 rounded-lg border px-3 text-sm transition-colors',
               hasActiveFilters
-                ? 'border-zinc-400 bg-zinc-100 text-zinc-900 dark:border-white/30 dark:bg-white/10 dark:text-white'
-                : 'border-zinc-300 text-zinc-900 hover:bg-zinc-100 dark:border-white/10 dark:text-white/50 dark:hover:bg-white/5 dark:hover:text-white/80',
+                ? 'border-white/30 bg-white/10 text-white'
+                : 'border-white/10 text-white/50 hover:bg-white/5 hover:text-white/80',
             )}
         >
           <FiFilter size={15} />
@@ -109,7 +109,7 @@ export default function SearchBar({
         {hasActiveFilters && (
           <button
             onClick={clearFilters}
-            className="flex h-10 items-center gap-1 rounded-lg px-3 text-sm text-zinc-900 hover:bg-zinc-100 dark:text-white/50 dark:hover:bg-white/5"
+            className="flex h-10 items-center gap-1 rounded-lg px-3 text-sm text-white/50 hover:bg-white/5"
           >
             <FiX size={14} />
             <span className="hidden sm:inline">Clear</span>
@@ -120,7 +120,7 @@ export default function SearchBar({
       <AnimatePresence>
         {showFilters && (
           <motion.div
-            className="mt-3 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-white/10 dark:bg-zinc-900"
+            className="mt-3 overflow-hidden rounded-lg border border-white/10 bg-zinc-900 p-4"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -128,7 +128,7 @@ export default function SearchBar({
           >
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
               <div>
-                <label className="mb-1 block text-xs font-medium text-zinc-900 dark:text-white/50">
+                <label className="mb-1 block text-xs font-medium text-white/50">
                   Group
                 </label>
                 <select
@@ -136,7 +136,7 @@ export default function SearchBar({
                   onChange={(e) =>
                     updateFilter('group', e.target.value ? Number(e.target.value) : undefined)
                   }
-                  className="w-full rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm text-zinc-900 dark:border-white/10 dark:bg-zinc-800 dark:text-white"
+                  className="w-full rounded-md border border-white/10 bg-zinc-800 px-2 py-1.5 text-sm text-white"
                 >
                   <option value="">All</option>
                   {GROUPS.map((g) => (
@@ -148,7 +148,7 @@ export default function SearchBar({
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-medium text-zinc-900 dark:text-white/50">
+                <label className="mb-1 block text-xs font-medium text-white/50">
                   Period
                 </label>
                 <select
@@ -156,7 +156,7 @@ export default function SearchBar({
                   onChange={(e) =>
                     updateFilter('period', e.target.value ? Number(e.target.value) : undefined)
                   }
-                  className="w-full rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm text-zinc-900 dark:border-white/10 dark:bg-zinc-800 dark:text-white"
+                  className="w-full rounded-md border border-white/10 bg-zinc-800 px-2 py-1.5 text-sm text-white"
                 >
                   <option value="">All</option>
                   {PERIODS.map((p) => (
@@ -168,13 +168,13 @@ export default function SearchBar({
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-medium text-zinc-900 dark:text-white/50">
+                <label className="mb-1 block text-xs font-medium text-white/50">
                   Category
                 </label>
                 <select
                   value={filters.category ?? ''}
                   onChange={(e) => updateFilter('category', e.target.value || undefined)}
-                  className="w-full rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm text-zinc-900 dark:border-white/10 dark:bg-zinc-800 dark:text-white"
+                  className="w-full rounded-md border border-white/10 bg-zinc-800 px-2 py-1.5 text-sm text-white"
                 >
                   <option value="">All</option>
                   {CATEGORIES.map((cat) => (
@@ -186,13 +186,13 @@ export default function SearchBar({
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-medium text-zinc-900 dark:text-white/50">
+                <label className="mb-1 block text-xs font-medium text-white/50">
                   Phase
                 </label>
                 <select
                   value={filters.phase ?? ''}
                   onChange={(e) => updateFilter('phase', e.target.value || undefined)}
-                  className="w-full rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm text-zinc-900 dark:border-white/10 dark:bg-zinc-800 dark:text-white"
+                  className="w-full rounded-md border border-white/10 bg-zinc-800 px-2 py-1.5 text-sm text-white"
                 >
                   <option value="">All</option>
                   {PHASES.map((p) => (
@@ -204,13 +204,13 @@ export default function SearchBar({
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-medium text-zinc-900 dark:text-white/50">
+                <label className="mb-1 block text-xs font-medium text-white/50">
                   Block
                 </label>
                 <select
                   value={filters.block ?? ''}
                   onChange={(e) => updateFilter('block', e.target.value || undefined)}
-                  className="w-full rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm text-zinc-900 dark:border-white/10 dark:bg-zinc-800 dark:text-white"
+                  className="w-full rounded-md border border-white/10 bg-zinc-800 px-2 py-1.5 text-sm text-white"
                 >
                   <option value="">All</option>
                   {BLOCKS.map((b) => (
@@ -223,30 +223,30 @@ export default function SearchBar({
             </div>
 
             <div className="mt-3 flex flex-wrap gap-3">
-              <label className="flex items-center gap-2 text-sm text-zinc-900 dark:text-white/50">
+              <label className="flex items-center gap-2 text-sm text-white/50">
                 <input
                   type="checkbox"
                   checked={filters.radioactiveOnly ?? false}
                   onChange={(e) => updateFilter('radioactiveOnly', e.target.checked || undefined)}
-                  className="rounded border-zinc-300 text-zinc-600 focus:ring-zinc-500 dark:border-white/20 dark:bg-white/5 dark:text-purple-500 dark:focus:ring-purple-500/30"
+                  className="rounded border-white/20 bg-white/5 text-purple-500 focus:ring-purple-500/30"
                 />
                 Radioactive only
               </label>
-              <label className="flex items-center gap-2 text-sm text-zinc-900 dark:text-white/50">
+              <label className="flex items-center gap-2 text-sm text-white/50">
                 <input
                   type="checkbox"
                   checked={filters.naturalOnly ?? false}
                   onChange={(e) => updateFilter('naturalOnly', e.target.checked || undefined)}
-                  className="rounded border-zinc-300 text-zinc-600 focus:ring-zinc-500 dark:border-white/20 dark:bg-white/5 dark:text-purple-500 dark:focus:ring-purple-500/30"
+                  className="rounded border-white/20 bg-white/5 text-purple-500 focus:ring-purple-500/30"
                 />
                 Natural only
               </label>
-              <label className="flex items-center gap-2 text-sm text-zinc-900 dark:text-white/50">
+              <label className="flex items-center gap-2 text-sm text-white/50">
                 <input
                   type="checkbox"
                   checked={filters.syntheticOnly ?? false}
                   onChange={(e) => updateFilter('syntheticOnly', e.target.checked || undefined)}
-                  className="rounded border-zinc-300 text-zinc-600 focus:ring-zinc-500 dark:border-white/20 dark:bg-white/5 dark:text-purple-500 dark:focus:ring-purple-500/30"
+                  className="rounded border-white/20 bg-white/5 text-purple-500 focus:ring-purple-500/30"
                 />
                 Synthetic only
               </label>

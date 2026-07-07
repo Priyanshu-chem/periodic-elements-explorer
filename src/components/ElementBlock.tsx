@@ -62,8 +62,8 @@ export default function ElementBlock({
       whileHover={{ scale: 1.12, zIndex: 10 }}
       whileTap={{ scale: 0.95 }}
       className={cn(
-        'relative flex cursor-pointer flex-col rounded border border-zinc-200/50 text-left shadow-sm transition-all dark:border-white/10',
-        'hover:shadow-lg hover:shadow-black/10 dark:hover:shadow-black/30',
+        'relative flex cursor-pointer flex-col rounded border border-white/10 text-left shadow-sm transition-all',
+        'hover:shadow-lg hover:shadow-black/30',
         config.blockClass,
         isDimmed && 'opacity-25',
       )}
